@@ -1,39 +1,50 @@
-# Pipecat Prebuilt test app
+# Pipecat Prebuilt Test App
 
-## Setup
+This is a simple example app to help you test your Pipecat bot with a prebuilt UI and a basic Python backend.
 
-1. Create your python venv:
+---
 
-```bash
-python -m venv venv
-source venv/bin/activate
-```
+## 🚀 Setup
 
-2. Install requirements:
+1. **Create and activate a virtual environment:**
 
-```bash
-# install the prebuilt UI requirement
-pip install -e ../
-# install the other requirements
-pip install -r requirements.txt
-```
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    ```
 
-3. Create .env:
+2. **Install dependencies:**
 
-```
-cp env.example .env
-```
+    ```bash
+    # Install the Pipecat prebuilt UI package
+    pip install -e ../
 
-4. Add API keys for:
+    # Install additional requirements
+    pip install -r requirements.txt
+    ```
 
-- Google
+3. **Set up environment variables:**
 
-## Run the example
+    ```bash
+    cp env.example .env
+    ```
 
-Now you can run the example:
+4. **Add API keys** to your `.env` file for:
+
+    - Google (e.g., for Speech-to-Text or other services)
+
+---
+
+## ▶️ Run the Example
+
+Once setup is complete, start the app with:
 
 ```bash
 python run.py
 ```
 
-Open your browser to http://localhost:8000.
+## 🎉 Test with SmallWebRTC Prebuilt UI
+
+Open your browser and navigate to:
+👉 http://localhost:7860
+  - (Or use your custom port, if configured)
