@@ -6,3 +6,4 @@ dist
 client/node_modules
 client/dist
 small_webrtc_prebuilt.egg-info
+test/.env
