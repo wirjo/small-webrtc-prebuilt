@@ -53,7 +53,7 @@ git clone https://github.com/your-org/small-webrtc-prebuilt.git
 
 2. Create and activate a virtual environment:
    ```bash
-   cd smallwebrtc-prebuilt
+   cd small-webrtc-prebuilt
    python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
