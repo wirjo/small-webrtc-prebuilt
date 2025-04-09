@@ -32,12 +32,12 @@ export class VoiceVisualizer {
 
   constructor(options: VoiceVisualizerOptions = {}) {
     this.options = {
-      backgroundColor: options.backgroundColor || 'transparent',
-      barColor: options.barColor || 'rgba(255, 255, 255, 0.8)',
+      backgroundColor: options.backgroundColor || "transparent",
+      barColor: options.barColor || "rgba(255, 255, 255, 0.8)",
       barWidth: options.barWidth || 30,
       barGap: options.barGap || 12,
       barMaxHeight: options.barMaxHeight || 120,
-      container: options.container || 'voice-visualizer-container',
+      container: options.container || "voice-visualizer-container",
     };
 
     this.canvas = null;
@@ -62,20 +62,20 @@ export class VoiceVisualizer {
   private init(): void {
     const container = document.getElementById(this.options.container);
     if (!container) {
-      console.error('Visualizer container not found');
+      console.error("Visualizer container not found");
       return;
     }
 
     // Create canvas element
-    this.canvas = document.createElement('canvas');
-    this.canvas.id = 'voice-visualizer';
+    this.canvas = document.createElement("canvas");
+    this.canvas.id = "voice-visualizer";
     container.appendChild(this.canvas);
 
     // Set up canvas
     this.setupCanvas();
 
     // Add resize handler
-    window.addEventListener('resize', this.handleResize.bind(this));
+    window.addEventListener("resize", this.handleResize.bind(this));
   }
 
   private setupCanvas(): void {
@@ -91,9 +91,9 @@ export class VoiceVisualizer {
     this.canvas.style.width = `${canvasWidth}px`;
     this.canvas.style.height = `${canvasHeight}px`;
 
-    this.canvasCtx = this.canvas.getContext('2d');
+    this.canvasCtx = this.canvas.getContext("2d");
     if (this.canvasCtx) {
-      this.canvasCtx.lineCap = 'round';
+      this.canvasCtx.lineCap = "round";
       this.canvasCtx.scale(scaleFactor, scaleFactor);
     }
 
@@ -111,7 +111,7 @@ export class VoiceVisualizer {
 
   public connectToAudioTrack(track: MediaStreamTrack): void {
     if (!track) {
-      console.log('No audio track provided');
+      console.log("No audio track provided");
       this.disconnectAudio();
       return;
     }
@@ -136,9 +136,9 @@ export class VoiceVisualizer {
       this.isActive = true;
       this.startVisualization();
 
-      console.log('Voice visualizer connected to audio track');
+      console.log("Voice visualizer connected to audio track");
     } catch (error) {
-      console.error('Error connecting to audio track:', error);
+      console.error("Error connecting to audio track:", error);
     }
   }
 
@@ -154,7 +154,7 @@ export class VoiceVisualizer {
     }
 
     if (this.audioContext) {
-      if (this.audioContext.state !== 'closed') {
+      if (this.audioContext.state !== "closed") {
         this.audioContext.close();
       }
       this.audioContext = null;
