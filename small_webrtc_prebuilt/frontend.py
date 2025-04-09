@@ -4,7 +4,7 @@ import os
 from fastapi.staticfiles import StaticFiles
 
 # Path to your compiled Vite app
-dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "client", "dist"))
+dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "client", "dist"))
 
 print(f"Looking for dist directory at: {dist_dir}")
 logging.info(f"Dist directory path: {dist_dir}")

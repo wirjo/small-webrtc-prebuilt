@@ -1,1 +1,1 @@
-recursive-include client/dist *
+recursive-include small_webrtc_prebuilt/client/dist *
