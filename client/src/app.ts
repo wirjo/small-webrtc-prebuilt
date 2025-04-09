@@ -401,22 +401,14 @@ class WebRTCApp {
     enabled: boolean
   ): void {
     this.log(`Video track ${enabled ? 'enabled' : 'disabled'}`);
-
-    // Only update visibility if we're connected
-    if (this.connected) {
-      if (enabled) {
-        // Show video, hide visualizer
-        this.videoContainer.classList.remove('video-hidden');
-        this.videoContainer.classList.add('video-visible');
-      } else {
-        // Hide video, show visualizer
-        this.videoContainer.classList.remove('video-visible');
-        this.videoContainer.classList.add('video-hidden');
-      }
-    } else {
-      // If not connected, hide both
+    if (enabled) {
+      // Show video, hide visualizer
       this.videoContainer.classList.remove('video-hidden');
+      this.videoContainer.classList.add('video-visible');
+    } else {
+      // Hide video, show visualizer
       this.videoContainer.classList.remove('video-visible');
+      this.videoContainer.classList.add('video-hidden');
     }
   }
 
@@ -511,6 +503,7 @@ class WebRTCApp {
   }
 
   private onBotTrackStarted(track: MediaStreamTrack): void {
+    console.log("onBotTrackStarted", track.kind)
     if (track.kind === 'video') {
       // Set the video track to the video element
       this.videoElement.srcObject = new MediaStream([track]);
