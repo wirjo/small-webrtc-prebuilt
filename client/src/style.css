@@ -363,19 +363,18 @@ body {
   z-index: 10;
   background-color: #000;
   transition: opacity 0.3s ease;
-  opacity: 0; /* Hidden by default */
-  visibility: hidden; /* Completely hide it initially */
+  opacity: 1;
+  visibility: visible;
 }
 
-/* Update the state classes */
 .video-hidden .voice-visualizer-wrapper {
   opacity: 1;
-  visibility: visible; /* Make it visible when video is hidden */
+  visibility: visible;
 }
 
 .video-visible .voice-visualizer-wrapper {
   opacity: 0;
-  visibility: hidden; /* Hide it when video is visible */
+  visibility: hidden;
 }
 
 audio {
