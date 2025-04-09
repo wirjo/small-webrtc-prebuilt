@@ -18,7 +18,7 @@ from loguru import logger
 from pipecat.transports.network.webrtc_connection import SmallWebRTCConnection
 
 # Import your prebuilt UI
-from small_webrtc_prebuilt.frontend import small_webrtc_prebuilt_ui
+from small_webrtc_prebuilt.frontend import SmallWebRTCPrebuiltUI
 
 # Load environment variables
 load_dotenv(override=True)
@@ -165,7 +165,7 @@ async def webrtc_offer_post(request: Request):
 
 
 # Mount your prebuilt UI *AFTER* defining API endpoints
-app.mount("/", small_webrtc_prebuilt_ui)
+app.mount("/", SmallWebRTCPrebuiltUI)
 
 
 @app.get("/", include_in_schema=False)

@@ -16,4 +16,4 @@ if not os.path.isdir(dist_dir):
         f"Static frontend build not found at: {dist_dir}. Please run `npm run build` in the client directory."
     )
 
-small_webrtc_prebuilt_ui = StaticFiles(directory=dist_dir, html=True)
+SmallWebRTCPrebuiltUI = StaticFiles(directory=dist_dir, html=True)

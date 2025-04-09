@@ -1,12 +1,12 @@
 import argparse
 import uvicorn
 from fastapi import FastAPI
-from small_webrtc_prebuilt.frontend import small_webrtc_prebuilt_ui
+from small_webrtc_prebuilt.frontend import SmallWebRTCPrebuiltUI
 
 app = FastAPI()
 
 # Mount the frontend at /client
-app.mount("/client", small_webrtc_prebuilt_ui, name="small-webrtc-ui")
+app.mount("/client", SmallWebRTCPrebuiltUI, name="small-webrtc-ui")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="WebRTC demo")
