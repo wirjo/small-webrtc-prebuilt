@@ -5,13 +5,19 @@
 #
 
 import argparse
+import asyncio
 import logging
-import os
-import sys
-from pathlib import Path
+from contextlib import asynccontextmanager
+from typing import Dict
 
 import uvicorn
+from bot import run_bot
 from dotenv import load_dotenv
+from fastapi import BackgroundTasks, FastAPI
+from fastapi.responses import RedirectResponse
+from small_webrtc_prebuilt.frontend import SmallWebRTCPrebuiltUI
+
+from pipecat.transports.network.webrtc_connection import SmallWebRTCConnection
 
 # Load environment variables
 load_dotenv(override=True)
@@ -24,100 +30,72 @@ logging.basicConfig(
 )
 logger = logging.getLogger("pipecat-server")
 
+app = FastAPI()
 
-def list_available_bots():
-    """List all available bot files in the bots directory."""
-    bots_dir = Path(__file__).parent / "bots"
-    bot_files = list(bots_dir.glob("*.py"))
+# Store connections by pc_id
+pcs_map: Dict[str, SmallWebRTCConnection] = {}
 
-    # Skip __init__.py and other special files
-    bot_files = [f for f in bot_files if not f.name.startswith("__")]
+ice_servers = ["stun:stun.l.google.com:19302"]
 
-    return sorted(bot_files)
+# Mount the frontend at /
+app.mount("/client", SmallWebRTCPrebuiltUI)
 
 
-def main():
-    """Run the Pipecat foundational example web app."""
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description="Pipecat Foundational Examples")
+@app.get("/", include_in_schema=False)
+async def root_redirect():
+    return RedirectResponse(url="/client/")
 
-    # Bot file argument as positional argument
-    parser.add_argument(
-        "bot_file",
-        nargs="?",
-        help="Path to bot Python file to run",
-    )
 
-    # Server configuration
-    parser.add_argument(
-        "-p",
-        "--port",
-        type=int,
-        default=int(os.getenv("PORT", "8000")),
-        help="Port to run the server on (default: 8000)",
-    )
+@app.post("/api/offer")
+async def offer(request: dict, background_tasks: BackgroundTasks):
+    pc_id = request.get("pc_id")
 
-    parser.add_argument(
-        "--host",
-        default=os.getenv("HOST", "0.0.0.0"),
-        help="Host to bind the server to (default: 0.0.0.0)",
-    )
+    if pc_id and pc_id in pcs_map:
+        pipecat_connection = pcs_map[pc_id]
+        logger.info(f"Reusing existing connection for pc_id: {pc_id}")
+        await pipecat_connection.renegotiate(
+            sdp=request["sdp"], type=request["type"], restart_pc=request.get("restart_pc", False)
+        )
+    else:
+        pipecat_connection = SmallWebRTCConnection(ice_servers)
+        await pipecat_connection.initialize(sdp=request["sdp"], type=request["type"])
 
-    # List available bots
-    parser.add_argument(
-        "-l",
-        "--list",
-        action="store_true",
-        help="List available bots and exit",
-    )
+        @pipecat_connection.event_handler("closed")
+        async def handle_disconnected(webrtc_connection: SmallWebRTCConnection):
+            logger.info(f"Discarding peer connection for pc_id: {webrtc_connection.pc_id}")
+            pcs_map.pop(webrtc_connection.pc_id, None)
 
-    # Parse arguments
-    args = parser.parse_args()
+        background_tasks.add_task(run_bot, pipecat_connection)
 
-    # If list flag is provided, show available bots and exit
-    if args.list:
-        bot_files = list_available_bots()
+    answer = pipecat_connection.get_answer()
+    # Updating the peer connection inside the map
+    pcs_map[answer["pc_id"]] = pipecat_connection
 
-        if not bot_files:
-            print("No bot files found in the 'bots' directory.")
-            sys.exit(1)
+    return answer
 
-        print("\nAvailable Pipecat Bots:")
-        print("=========================")
 
-        for bot_file in bot_files:
-            print(f"  {bot_file.relative_to(Path(__file__).parent)}")
-
-        print("\nRun with: python run.py <bot-file>")
-        sys.exit(0)
-
-    # If no bot file is specified and not listing, show error
-    if not args.bot_file:
-        parser.error("You must specify a bot file to run. Use --list to see available options.")
-
-    # Get the absolute path to the bot file
-    bot_path = Path(args.bot_file).absolute()
-    if not bot_path.exists():
-        parser.error(f"Bot file not found: {bot_path}")
-
-    # Set up the environment variables for the server
-    os.environ["PORT"] = str(args.port)
-    os.environ["HOST"] = args.host
-
-    # Store the bot file path in the environment for app.py to access
-    os.environ["BOT_FILE_PATH"] = str(bot_path)
-
-    # Print startup information
-    logger.info("-" * 43)
-    logger.info(f"Starting {bot_path.name}")
-    logger.info(f"Open your browser to: http://localhost:{args.port}")
-    logger.info("-" * 43)
-
-    # Import the app and run it
-    from app import app
-
-    uvicorn.run(app, host=args.host, port=args.port)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield  # Run app
+    coros = [pc.close() for pc in pcs_map.values()]
+    await asyncio.gather(*coros)
+    pcs_map.clear()
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="WebRTC demo")
+    parser.add_argument(
+        "--host", default="localhost", help="Host for HTTP server (default: localhost)"
+    )
+    parser.add_argument(
+        "--port", type=int, default=7860, help="Port for HTTP server (default: 7860)"
+    )
+    parser.add_argument("--verbose", "-v", action="count")
+    args = parser.parse_args()
+
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
+    uvicorn.run(app, host=args.host, port=args.port)

@@ -26,17 +26,14 @@ cp env.example .env
 
 4. Add API keys for:
 
-- Cartesia
-- Deepgram
-- OpenAI
-- Fal (image example only)
+- Google
 
 ## Run the example
 
 Now you can run the example:
 
 ```bash
-python run.py bot.py
+python run.py
 ```
 
 Open your browser to http://localhost:8000.
