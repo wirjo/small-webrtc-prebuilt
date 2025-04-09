@@ -12,6 +12,9 @@ source venv/bin/activate
 2. Install requirements:
 
 ```bash
+# install the prebuilt UI requirement
+pip install -e ../
+# install the other requirements
 pip install -r requirements.txt
 ```
 
