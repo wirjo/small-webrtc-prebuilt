@@ -37,7 +37,7 @@ twine upload --repository testpypi dist/*
 
 Test using pip to download packages from TestPyPI instead of PyPI
 ```shell
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pipecat-ai-krisp
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pipecat-ai-small-webrtc-prebuilt
 ```
 
 Once you are happy, publish it to production.

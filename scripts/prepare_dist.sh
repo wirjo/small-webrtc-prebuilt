@@ -7,11 +7,11 @@ sh ./scripts/clear.sh
 (cd client; npm i; npm run build;)
 
 # Moving the dist to inside the module
-mkdir small_webrtc_prebuilt/client
-mv client/dist small_webrtc_prebuilt/client
+mkdir pipecat_ai_small_webrtc_prebuilt/client
+mv client/dist pipecat_ai_small_webrtc_prebuilt/client
 
 # Build the dist
 python setup.py sdist
 
 # Removing the dist from inside the module
-rm -rf small_webrtc_prebuilt/client/
+rm -rf pipecat_ai_small_webrtc_prebuilt/client/
