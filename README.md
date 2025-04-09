@@ -48,7 +48,7 @@ Want to see it in action? Check out our sample app demonstrating how to use this
 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/your-org/smallwebrtc-prebuilt.git
+git clone https://github.com/your-org/small-webrtc-prebuilt.git
 ```
 
 2. Create and activate a virtual environment:
