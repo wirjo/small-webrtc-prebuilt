@@ -1,12 +1,17 @@
 import argparse
 import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from small_webrtc_prebuilt.frontend import SmallWebRTCPrebuiltUI
 
 app = FastAPI()
 
 # Mount the frontend at /client
 app.mount("/client", SmallWebRTCPrebuiltUI, name="small-webrtc-ui")
+
+@app.get("/", include_in_schema=False)
+async def root_redirect():
+    return RedirectResponse(url="/client/")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="WebRTC demo")
