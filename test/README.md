@@ -1,0 +1,39 @@
+# Pipecat Prebuilt test app
+
+## Setup
+
+1. Create your python venv:
+
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+
+2. Install requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Create .env:
+
+```
+cp env.example .env
+```
+
+4. Add API keys for:
+
+- Cartesia
+- Deepgram
+- OpenAI
+- Fal (image example only)
+
+## Run the example
+
+Now you can run the example:
+
+```bash
+python run.py bot.py
+```
+
+Open your browser to http://localhost:8000.
