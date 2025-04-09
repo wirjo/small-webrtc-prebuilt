@@ -143,15 +143,7 @@ class WebRTCApp {
           if (participant?.local) {
             // Handle local tracks (e.g., self-view)
             if (track.kind === 'video') {
-              if (this.selfViewVideo && !this.selfViewVideo.srcObject) {
-                this.selfViewVideo.srcObject = new MediaStream([track]);
-              } else if (this.selfViewVideo && this.selfViewVideo.srcObject) {
-                const stream = this.selfViewVideo.srcObject as MediaStream;
-                const videoTracks = stream.getVideoTracks();
-                if (videoTracks.length === 0) {
-                  stream.addTrack(track);
-                }
-              }
+              this.selfViewVideo.srcObject = new MediaStream([track]);
               this.updateSelfViewVisibility();
             }
             return;
