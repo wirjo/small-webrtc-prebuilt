@@ -11,6 +11,7 @@ import {
   RTVIClientOptions,
 } from '@pipecat-ai/client-js';
 import './style.css';
+import {VoiceVisualizer} from "./voice-visualizer";
 
 class WebRTCApp {
   // UI elements
@@ -44,8 +45,10 @@ class WebRTCApp {
   private cameraMuted: boolean = true;
   private smallWebRTCTransport!: SmallWebRTCTransport;
   private rtviClient!: RTVIClient;
+  private voiceVisualizer: VoiceVisualizer
 
   constructor() {
+    this.initializeVoiceVisualizer();
     this.setupDOMElements();
     this.setupDOMEventListeners();
     this.initializeRTVIClient();
@@ -59,6 +62,16 @@ class WebRTCApp {
 
     // Initialize the devices
     void this.populateDevices();
+  }
+
+  initializeVoiceVisualizer() {
+    this.voiceVisualizer = new VoiceVisualizer({
+      backgroundColor: 'transparent',
+      barColor: 'rgba(255, 255, 255, 0.8)',
+      barWidth: 30,
+      barGap: 12,
+      barMaxHeight: 120,
+    });
   }
 
   private initializeRTVIClient(): void {
@@ -498,8 +511,8 @@ class WebRTCApp {
     this.videoContainer.classList.remove('video-hidden');
 
     // Disconnect the visualizer
-    if (window.voiceVisualizer) {
-      window.voiceVisualizer.disconnectAudio();
+    if (this.voiceVisualizer) {
+      this.voiceVisualizer.disconnectAudio();
     }
 
     this.log(`Status: Disconnected`, 'status');
@@ -521,8 +534,8 @@ class WebRTCApp {
       this.audioElement.srcObject = new MediaStream([track]);
 
       // Connect to visualizer
-      if (window.voiceVisualizer) {
-        window.voiceVisualizer.connectToAudioTrack(track);
+      if (this.voiceVisualizer) {
+        this.voiceVisualizer.connectToAudioTrack(track);
       }
     }
   }
@@ -630,8 +643,8 @@ class WebRTCApp {
       await this.rtviClient.disconnect();
 
       // Additional cleanup for the visualizer
-      if (window.voiceVisualizer) {
-        window.voiceVisualizer.disconnectAudio();
+      if (this.voiceVisualizer) {
+        this.voiceVisualizer.disconnectAudio();
       }
 
       // Clear video elements
@@ -662,7 +675,6 @@ class WebRTCApp {
 // Define the global interface for TypeScript
 declare global {
   interface Window {
-    voiceVisualizer: any;
     webRTCApp: {
       shutdown(): void;
     };

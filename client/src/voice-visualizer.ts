@@ -19,7 +19,7 @@ interface FrequencyBand {
   smoothValue: number;
 }
 
-class VoiceVisualizer {
+export class VoiceVisualizer {
   private options: Required<VoiceVisualizerOptions>;
   private canvas: HTMLCanvasElement | null;
   private canvasCtx: CanvasRenderingContext2D | null;
@@ -305,17 +305,3 @@ class VoiceVisualizer {
     });
   }
 }
-
-// Initialize the visualizer when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-  // Create the visualizer with white bars on transparent background
-  window.voiceVisualizer = new VoiceVisualizer({
-    backgroundColor: 'transparent',
-    barColor: 'rgba(255, 255, 255, 0.8)',
-    barWidth: 30,
-    barGap: 12,
-    barMaxHeight: 120,
-  });
-});
-
-export {};
