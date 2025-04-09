@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD 2-Clause License
  */
 
-interface VoiceVisualizerOptions {
+export interface VoiceVisualizerOptions {
   backgroundColor?: string;
   barColor?: string;
   barWidth?: number;
@@ -13,7 +13,7 @@ interface VoiceVisualizerOptions {
   container?: string;
 }
 
-interface FrequencyBand {
+export interface FrequencyBand {
   startFreq: number;
   endFreq: number;
   smoothValue: number;
@@ -120,12 +120,17 @@ export class VoiceVisualizer {
     this.disconnectAudio();
 
     try {
+      // @ts-ignore
       this.audioContext = new (window.AudioContext ||
         (window as any).webkitAudioContext)();
       const stream = new MediaStream([track]);
+      // @ts-ignore
       this.source = this.audioContext.createMediaStreamSource(stream);
+      // @ts-ignore
       this.analyser = this.audioContext.createAnalyser();
+      // @ts-ignore
       this.analyser.fftSize = 1024;
+      // @ts-ignore
       this.source.connect(this.analyser);
 
       this.isActive = true;

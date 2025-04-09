@@ -11,7 +11,7 @@ import {
   RTVIClientOptions,
 } from '@pipecat-ai/client-js';
 import './style.css';
-import {VoiceVisualizer} from "./voice-visualizer";
+import { VoiceVisualizer } from "./voice-visualizer";
 
 class WebRTCApp {
   // UI elements
@@ -45,7 +45,7 @@ class WebRTCApp {
   private cameraMuted: boolean = true;
   private smallWebRTCTransport!: SmallWebRTCTransport;
   private rtviClient!: RTVIClient;
-  private voiceVisualizer: VoiceVisualizer
+  private declare voiceVisualizer: VoiceVisualizer
 
   constructor() {
     this.initializeVoiceVisualizer();
