@@ -3,17 +3,27 @@ import os
 
 from fastapi.staticfiles import StaticFiles
 
-# Path to your compiled Vite app
-dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "client", "dist"))
+# Define possible paths to the dist directory
+base_dir = os.path.dirname(__file__)
+possible_dist_paths = [
+    os.path.abspath(os.path.join(base_dir, "client", "dist")), # in prod
+    os.path.abspath(os.path.join(base_dir, "..", "client", "dist")),  # in dev
+]
 
-print(f"Looking for dist directory at: {dist_dir}")
-logging.info(f"Dist directory path: {dist_dir}")
+dist_dir = None
 
-if not os.path.isdir(dist_dir):
-    print(f"Directory not found: {dist_dir}")
-    logging.error(f"Static frontend build not found at: {dist_dir}")
+# Try each possible path
+for path in possible_dist_paths:
+    print(f"Looking for dist directory at: {path}")
+    logging.info(f"Checking dist directory path: {path}")
+    if os.path.isdir(path):
+        dist_dir = path
+        break
+
+if not dist_dir:
+    logging.error("Static frontend build not found in any of the expected locations.")
     raise RuntimeError(
-        f"Static frontend build not found at: {dist_dir}. Please run `npm run build` in the client directory."
+        "Static frontend build not found. Please run `npm run build` in the client directory."
     )
 
 SmallWebRTCPrebuiltUI = StaticFiles(directory=dist_dir, html=True)
