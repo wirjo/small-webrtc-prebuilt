@@ -11,7 +11,7 @@ import {
   RTVIClientOptions,
 } from '@pipecat-ai/client-js';
 import './style.css';
-import { VoiceVisualizer } from "./voice-visualizer";
+import { VoiceVisualizer } from './voice-visualizer';
 
 class WebRTCApp {
   // UI elements
@@ -45,7 +45,7 @@ class WebRTCApp {
   private cameraMuted: boolean = true;
   private smallWebRTCTransport!: SmallWebRTCTransport;
   private rtviClient!: RTVIClient;
-  private declare voiceVisualizer: VoiceVisualizer
+  private declare voiceVisualizer: VoiceVisualizer;
 
   constructor() {
     this.initializeVoiceVisualizer();
@@ -502,18 +502,55 @@ class WebRTCApp {
     this.log(`Status: Disconnected`, 'status');
   }
 
+  /**
+   * Handles new media tracks from the bot
+   *
+   * Visualizer display logic:
+   * - Show visualizer when no video track is active (track is muted or not available)
+   * - Hide visualizer when video track is active with valid resolution
+   * - Show visualizer when video track is active but has 0x0 resolution (empty video)
+   *
+   * This ensures the visualizer is always visible when there's no meaningful video content
+   * to display, even if a track is technically "active" but contains no visible content.
+   *
+   * @param track The media track received from the bot
+   */
   private onBotTrackStarted(track: MediaStreamTrack): void {
-    console.log("onBotTrackStarted", track.kind)
     if (track.kind === 'video') {
       // Set the video track to the video element
       this.videoElement.srcObject = new MediaStream([track]);
 
-      // Update visibility based on track state
-      this.updateVideoVisibility(track, !track.muted);
+      // Function to check resolution and update visibility
+      const checkVideoResolution = () => {
+        const hasValidResolution =
+          this.videoElement.videoWidth > 0 && this.videoElement.videoHeight > 0;
+        // Show video only if track is not muted AND has valid resolution
+        // Otherwise show the visualizer
+        this.updateVideoVisibility(track, !track.muted && hasValidResolution);
+      };
+
+      // Check resolution once metadata is loaded
+      this.videoElement.addEventListener(
+        'loadedmetadata',
+        checkVideoResolution
+      );
+
+      // Also check when resolution might change (e.g., after track changes)
+      this.videoElement.addEventListener('resize', checkVideoResolution);
 
       // Set up track mute/unmute handling
       track.onmute = () => this.updateVideoVisibility(track, false);
-      track.onunmute = () => this.updateVideoVisibility(track, true);
+      track.onunmute = () => {
+        // When track unmutes, check if we have valid video dimensions
+        if (this.videoElement.readyState >= 1) {
+          checkVideoResolution();
+        } // Otherwise, loadedmetadata event will handle it
+      };
+
+      // Initial check in case the track already has valid data
+      if (this.videoElement.readyState >= 1) {
+        checkVideoResolution();
+      }
     } else if (track.kind === 'audio') {
       // Set the audio track to the audio element
       this.audioElement.srcObject = new MediaStream([track]);
