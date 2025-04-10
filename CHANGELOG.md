@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumping to use version `0.0.2` of `@pipecat-ai/small-webrtc-transport`.
     - [Changelog](https://github.com/pipecat-ai/pipecat-client-web-transports/blob/main/transports/small-webrtc-transport/CHANGELOG.md#002---2025-04-10).
 
+### Fixed
+
+- Fixed issue where we were reconnecting after changing the audio or video device.
+
 ## [0.0.3] - 2025-04-10
 
 ### Fixed

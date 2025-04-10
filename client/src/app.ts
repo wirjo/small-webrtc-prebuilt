@@ -283,12 +283,6 @@ class WebRTCApp {
 
       void this.rtviClient.updateMic(audioDevice);
       this.updateCurrentDeviceDisplay();
-
-      if (this.connected) {
-        this.log("Reconnecting to apply device change...");
-        void this.stop();
-        setTimeout(() => void this.start(), 500);
-      }
     });
 
     this.videoInput.addEventListener("change", (e) => {
@@ -297,12 +291,6 @@ class WebRTCApp {
 
       void this.rtviClient.updateCam(videoDevice);
       this.updateCurrentDeviceDisplay();
-
-      if (this.connected) {
-        this.log("Reconnecting to apply device change...");
-        void this.stop();
-        setTimeout(() => void this.start(), 500);
-      }
     });
 
     // Close popovers when clicking outside
