@@ -39,6 +39,10 @@ class WebRTCApp {
   private botName!: HTMLElement;
   private sendBtn!: HTMLElement;
   private msgInput!: HTMLInputElement;
+  private textContainer!: HTMLElement;
+  private textChatLog!: HTMLElement;
+  private botContainer!: HTMLElement;
+  private inputArea!: HTMLElement;
 
   // State
   private connected: boolean = false;
@@ -135,6 +139,7 @@ class WebRTCApp {
         },
         onBotTranscript: (transcript) => {
           this.log(`Bot transcript: ${transcript.text}`);
+          this.chatLog(`Bot: ${transcript.text}`);
         },
 
         // Media tracks
@@ -156,7 +161,20 @@ class WebRTCApp {
 
         // Other events
         onServerMessage: (msg) => {
-          this.log(`Server message: ${msg}`);
+          this.log(`Server message: ${JSON.stringify(msg)}`);
+
+          // if server message is about UI; hide UI containers
+          if ('show_text_container' in msg && msg.show_text_container) {
+            this.textContainer.style.display = "flex";
+            this.inputArea.style.display = "flex";
+          }
+          if ('show_video_container' in msg && !msg.show_video_container) {
+            this.videoContainer.style.display = "none";
+            this.botContainer.style.display = "none";
+          }
+          if ('show_debug_container' in msg && !msg.show_debug_container) {
+            this.debugLog.style.display = "none";
+          }
         },
       },
     };
@@ -198,6 +216,9 @@ class WebRTCApp {
       "bot-audio"
     ) as HTMLAudioElement;
     this.debugLog = document.getElementById("debug-log") as HTMLElement;
+    this.textChatLog = document.getElementById(
+      "text-chat-log"
+    ) as HTMLElement;
     this.micToggleBtn = document.getElementById(
       "mic-toggle"
     ) as HTMLButtonElement;
@@ -233,6 +254,15 @@ class WebRTCApp {
     this.sendBtn = document.getElementById("send-btn") as HTMLElement;
     this.msgInput = document.getElementById(
       "message-input"
+    ) as HTMLInputElement;
+    this.textContainer = document.getElementById(
+      "bot-text-container"
+    ) as HTMLInputElement;
+    this.botContainer = document.getElementsByClassName(
+      "bot-container"
+    )[0] as HTMLElement;
+    this.inputArea = document.getElementById(
+      "input-area"
     ) as HTMLInputElement;
   }
 
@@ -347,7 +377,7 @@ class WebRTCApp {
           },
         ],
       });
-      this.log(`User: ${message}`);
+      this.chatLog(`User: ${message}`);
     } catch (e) {
       console.error(e);
     } finally {
@@ -448,6 +478,28 @@ class WebRTCApp {
     }
   }
 
+    private chatLog(message: string, type: string = "normal"): void {
+    if (!this.textChatLog) return;
+
+    const now = new Date();
+    const timeString = now.toISOString().replace("T", " ").substring(0, 19);
+
+    const entry = document.createElement("div");
+    entry.textContent = `${timeString} - ${message}`;
+
+    // Apply styling based on message type
+    if (message.includes("User:")) {
+      entry.classList.add("user-message");
+    } else if (message.includes("Bot:")) {
+      entry.classList.add("bot-message");
+    } else if (type === "error") {
+      entry.classList.add("error-message");
+    }
+
+    this.textChatLog.appendChild(entry);
+    this.textChatLog.scrollTop = this.textChatLog.scrollHeight;
+  }
+
   private log(message: string, type: string = "normal"): void {
     if (!this.debugLog) return;
 
@@ -476,6 +528,9 @@ class WebRTCApp {
     if (this.debugLog) {
       this.debugLog.innerHTML = "";
       this.log("Log cleared", "status");
+    }
+    if (this.textChatLog) {
+      this.textChatLog.innerHTML = "";
     }
   }
 
