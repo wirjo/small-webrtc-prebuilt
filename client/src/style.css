@@ -381,6 +381,20 @@ audio {
   display: none; /* Hide audio but keep it functional */
 }
 
+#input-area {
+    display: flex;
+    width: 100%;
+}
+
+#message-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    width: 100%;
+}
+
 /* Media queries */
 @media (max-width: 768px) {
   .container {

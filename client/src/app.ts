@@ -37,6 +37,8 @@ class WebRTCApp {
   private selfViewVideo!: HTMLVideoElement;
   private videoContainer!: HTMLElement;
   private botName!: HTMLElement;
+  private sendBtn!: HTMLElement;
+  private msgInput!: HTMLInputElement;
 
   // State
   private connected: boolean = false;
@@ -228,6 +230,10 @@ class WebRTCApp {
       "bot-video-container"
     ) as HTMLElement;
     this.botName = document.getElementById("bot-name") as HTMLElement;
+    this.sendBtn = document.getElementById("send-btn") as HTMLElement;
+    this.msgInput = document.getElementById(
+      "message-input"
+    ) as HTMLInputElement;
   }
 
   private setupDOMEventListeners(): void {
@@ -306,7 +312,49 @@ class WebRTCApp {
         this.cameraChevronBtn.classList.remove("active");
       }
     });
+
+    // Text chat handlers
+    this.sendBtn.addEventListener('click', () => this.handleTextSubmit());
+    const _this = this;
+    this.msgInput.addEventListener(
+      'keydown',
+      function (event) {
+        if (event.key === 'Enter') {
+          _this.handleTextSubmit();
+        }
+      }
+    );
+
   }
+
+  async handleTextSubmit() {
+    const text = this.msgInput.value;
+    const message = text.trim();
+
+    try {
+      await this.rtviClient?.action({
+        service: "llm",
+        action: "append_to_messages",
+        arguments: [
+          {
+            name: "messages",
+            value: [
+              {
+                role: "user",
+                content: message,
+              },
+            ],
+          },
+        ],
+      });
+      this.log(`User: ${message}`);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.msgInput.value = ""
+    }
+  };
+
 
   private togglePopover(popover: HTMLElement, chevronBtn: HTMLElement): void {
     popover.classList.toggle("show");
