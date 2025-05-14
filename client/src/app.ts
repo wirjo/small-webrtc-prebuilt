@@ -37,7 +37,6 @@ class WebRTCApp {
   private selfViewVideo!: HTMLVideoElement;
   private videoContainer!: HTMLElement;
   private botName!: HTMLElement;
-  private sendBtn!: HTMLElement;
   private msgInput!: HTMLInputElement;
   private textContainer!: HTMLElement;
   private textChatLog!: HTMLElement;
@@ -139,7 +138,7 @@ class WebRTCApp {
         },
         onBotTranscript: (transcript) => {
           this.log(`Bot transcript: ${transcript.text}`);
-          this.chatLog(`Bot: ${transcript.text}`);
+          this.chatLog(transcript.text.trim(), "Bot");
         },
 
         // Media tracks
@@ -215,7 +214,7 @@ class WebRTCApp {
     this.audioElement = document.getElementById(
       "bot-audio"
     ) as HTMLAudioElement;
-    this.debugLog = document.getElementById("debug-log") as HTMLElement;
+    this.debugLog = document.getElementsByClassName("debug-panel")[0] as HTMLElement;
     this.textChatLog = document.getElementById(
       "text-chat-log"
     ) as HTMLElement;
@@ -251,7 +250,6 @@ class WebRTCApp {
       "bot-video-container"
     ) as HTMLElement;
     this.botName = document.getElementById("bot-name") as HTMLElement;
-    this.sendBtn = document.getElementById("send-btn") as HTMLElement;
     this.msgInput = document.getElementById(
       "message-input"
     ) as HTMLInputElement;
@@ -344,22 +342,19 @@ class WebRTCApp {
     });
 
     // Text chat handlers
-    this.sendBtn.addEventListener('click', () => this.handleTextSubmit());
-    const _this = this;
-    this.msgInput.addEventListener(
-      'keydown',
-      function (event) {
-        if (event.key === 'Enter') {
-          _this.handleTextSubmit();
-        }
-      }
-    );
-
+    this.inputArea.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      this.handleTextSubmit();
+    });
   }
 
   async handleTextSubmit() {
     const text = this.msgInput.value;
     const message = text.trim();
+
+    if (message.length === 0) {
+      return; // Ignore empty messages
+    }
 
     try {
       await this.rtviClient?.action({
@@ -377,7 +372,7 @@ class WebRTCApp {
           },
         ],
       });
-      this.chatLog(`User: ${message}`);
+      this.chatLog(message.trim(), "User");
     } catch (e) {
       console.error(e);
     } finally {
@@ -485,15 +480,36 @@ class WebRTCApp {
     const timeString = now.toISOString().replace("T", " ").substring(0, 19);
 
     const entry = document.createElement("div");
-    entry.textContent = `${timeString} - ${message}`;
+    entry.classList.add("message")
+    // Create elements for time, author, and message
+    const timeElement = document.createElement("span");
+    timeElement.className = "message-time";
+    timeElement.textContent = timeString;
+    
+    const authorElement = document.createElement("span");
+    authorElement.className = "message-author";
+    authorElement.textContent = type;
+    
+    const messageElement = document.createElement("span");
+    messageElement.className = "message-content";
+    messageElement.textContent = message.trim();
+    
+    // Append them to the entry
+    entry.appendChild(timeElement);
+    entry.appendChild(authorElement);
+    entry.appendChild(messageElement);
 
     // Apply styling based on message type
-    if (message.includes("User:")) {
-      entry.classList.add("user-message");
-    } else if (message.includes("Bot:")) {
-      entry.classList.add("bot-message");
-    } else if (type === "error") {
-      entry.classList.add("error-message");
+    switch (type.toLowerCase()) {
+      case "user":
+        entry.classList.add("user-message");
+        break;
+      case "bot":
+        entry.classList.add("bot-message");
+        break;
+      case "error":
+        entry.classList.add("error-message");
+        break;
     }
 
     this.textChatLog.appendChild(entry);
