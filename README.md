@@ -77,13 +77,26 @@ Upload to TestPyPI using twine
 twine upload --repository testpypi dist/*
 ```
 
+Uninstall previous production version
+```shell
+pip uninstall pipecat-ai-small-webrtc-prebuilt
+```
+
 Test using pip to download packages from TestPyPI instead of PyPI
 ```shell
 pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pipecat-ai-small-webrtc-prebuilt
 ```
+
+Double check version
+```shell
+pip list |grep pipecat-ai-small-webrtc-prebuilt
+```
+
+Run test...
 
 Once you are happy, publish it to production.
 ```shell
 twine upload dist/*
 ```
 
+Profit.
