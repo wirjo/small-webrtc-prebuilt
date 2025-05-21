@@ -2,4 +2,4 @@
 
 rm -rf dist
 rm -rf client/dist
-rm -rf small_webrtc_prebuilt.egg-info
+rm -rf pipecat_ai_small_webrtc_prebuilt.egg-info
