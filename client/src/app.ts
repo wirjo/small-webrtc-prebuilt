@@ -172,7 +172,8 @@ class WebRTCApp {
             this.botContainer.style.display = "none";
           }
           if ('show_debug_container' in msg && !msg.show_debug_container) {
-            this.debugLog.style.display = "none";
+            const debugLogPanel = document.getElementsByClassName("debug-panel")[0] as HTMLElement;
+            debugLogPanel.style.display = "none";
           }
         },
       },
@@ -214,7 +215,7 @@ class WebRTCApp {
     this.audioElement = document.getElementById(
       "bot-audio"
     ) as HTMLAudioElement;
-    this.debugLog = document.getElementsByClassName("debug-panel")[0] as HTMLElement;
+    this.debugLog = document.getElementById("debug-log") as HTMLElement;
     this.textChatLog = document.getElementById(
       "text-chat-log"
     ) as HTMLElement;
