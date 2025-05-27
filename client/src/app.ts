@@ -134,6 +134,7 @@ class WebRTCApp {
         onUserTranscript: (transcript) => {
           if (transcript.final) {
             this.log(`User transcript: ${transcript.text}`);
+            this.chatLog(transcript.text.trim(), "User");
           }
         },
         onBotTranscript: (transcript) => {
