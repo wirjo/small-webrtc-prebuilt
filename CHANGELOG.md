@@ -14,11 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.0] - 2025-05-28
 
-TBD
+- Added `User transcript` to text chat so both User spoken and User typed messages appear in chat.
 
 ## [0.6.3] - 2025-05-23
 
-TBD
+- Added text chat UI.  Toggle on by setting "bot-text-container" `div` and "input-area" `form` CSS to `display: flex`.
 
 ## [0.5.0] - 2025-04-11
 
