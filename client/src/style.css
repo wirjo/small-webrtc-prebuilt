@@ -18,7 +18,7 @@ html {
 
 body {
   margin: 0;
-  padding: 0;
+  padding: 10px 0 0 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
   background-color: #f4f4f4;
@@ -276,6 +276,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
+  border-radius: 8px 0 0 8px;
 }
 
 #bot-video-container {
@@ -323,6 +324,7 @@ body {
   overflow-y: auto;
   padding: 16px;
   background-color: #f8f8f8;
+  border-radius: 8px;
   font-family: "Menlo", "Monaco", "Courier New", monospace;
   font-size: 13px;
   line-height: 1.5;
@@ -386,7 +388,6 @@ body {
   font-weight: 500;
   margin-right: auto;
 }
-
 
 #debug-log .error-message {
   background: #ffeeee;
@@ -461,11 +462,11 @@ audio {
 }
 
 #message-input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 10px;
-    width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+  width: 100%;
 }
 
 #send-btn {
