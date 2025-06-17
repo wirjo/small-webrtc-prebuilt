@@ -4,3 +4,8 @@ html, body {
   height: 100%;
   margin: 0;
 }
+
+.pipecat-ui {
+  height: 100dvh;
+  width: 100dvw;
+}
