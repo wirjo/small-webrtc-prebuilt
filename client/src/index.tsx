@@ -12,7 +12,11 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <div className="pipecat-ui">
       <ConsoleLayout
-        baseUrl="/api/offer"
+        clientOptions={{
+          params: {
+            baseUrl: "/api/offer",
+          }
+        }}
         onConnect={async () => Promise.resolve(new Response())}
         transportType="smallwebrtc"
       />
