@@ -1,8 +1,15 @@
-@import "@pipecat-ai/ui/styles.css";
+@import "@pipecat-ai/voice-ui-kit/styles.css";
 
 html, body {
   height: 100%;
   margin: 0;
+}
+
+:root {
+  background: #fff;
+}
+.dark {
+  background: #000;
 }
 
 .pipecat-ui {

@@ -1,4 +1,4 @@
-import { ConsoleLayout } from "@pipecat-ai/ui";
+import { ConsoleTemplate, ThemeProvider } from "@pipecat-ai/voice-ui-kit";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
@@ -10,16 +10,18 @@ import "@fontsource-variable/geist-mono";
 createRoot(document.getElementById("root")!).render(
   // @ts-ignore
   <StrictMode>
-    <div className="pipecat-ui">
-      <ConsoleLayout
-        clientOptions={{
-          params: {
-            baseUrl: "/api/offer",
-          }
-        }}
-        onConnect={async () => Promise.resolve(new Response())}
-        transportType="smallwebrtc"
-      />
-    </div>
+    <ThemeProvider>
+      <div className="pipecat-ui">
+        <ConsoleTemplate
+          clientOptions={{
+            params: {
+              baseUrl: "/api/offer",
+            }
+          }}
+          onConnect={async () => Promise.resolve(new Response())}
+          transportType="smallwebrtc"
+        />
+      </div>
+    </ThemeProvider>
   </StrictMode>
 );
