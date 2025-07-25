@@ -1,18 +1,7 @@
 @import "@pipecat-ai/voice-ui-kit/styles.css";
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
-}
-
-:root {
-  background: #fff;
-}
-.vkui\:dark {
-  background: #000;
-}
-
-.pipecat-ui {
-  height: 100dvh;
-  width: 100dvw;
 }

@@ -1,4 +1,8 @@
-import { ConsoleTemplate, ThemeProvider } from "@pipecat-ai/voice-ui-kit";
+import {
+  ConsoleTemplate,
+  FullScreenContainer,
+  ThemeProvider,
+} from "@pipecat-ai/voice-ui-kit";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
@@ -11,17 +15,14 @@ createRoot(document.getElementById("root")!).render(
   // @ts-ignore
   <StrictMode>
     <ThemeProvider>
-      <div className="pipecat-ui">
+      <FullScreenContainer>
         <ConsoleTemplate
-          clientOptions={{
-            params: {
-              baseUrl: "/api/offer",
-            }
+          connectParams={{
+            connectionUrl: "/api/offer",
           }}
-          onConnect={async () => Promise.resolve(new Response())}
           transportType="smallwebrtc"
         />
-      </div>
+      </FullScreenContainer>
     </ThemeProvider>
   </StrictMode>
 );
