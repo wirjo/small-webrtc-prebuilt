@@ -74,15 +74,12 @@ Respond to what the user said in a creative and helpful way. Keep your responses
 
 async def run_bot(webrtc_connection):
     transport_params = TransportParams(
-        camera_in_enabled=True,
-        camera_out_enabled=True,
-        camera_out_is_live=True,
+        video_in_enabled=True,
+        video_out_enabled=True,
+        video_out_is_live=True,
         audio_in_enabled=True,
         audio_out_enabled=True,
-        vad_enabled=True,
         vad_analyzer=SileroVADAnalyzer(),
-        vad_audio_passthrough=True,
-        audio_out_10ms_chunks=2,
     )
 
     pipecat_transport = SmallWebRTCTransport(
@@ -128,8 +125,8 @@ async def run_bot(webrtc_connection):
         pipeline,
         params=PipelineParams(
             allow_interruptions=True,
-            observers=[RTVIObserver(rtvi)],
         ),
+        observers=[RTVIObserver(rtvi)],
     )
 
     @rtvi.event_handler("on_client_ready")
@@ -146,10 +143,6 @@ async def run_bot(webrtc_connection):
     @pipecat_transport.event_handler("on_client_disconnected")
     async def on_client_disconnected(transport, client):
         logger.info("Pipecat Client disconnected")
-
-    @pipecat_transport.event_handler("on_client_closed")
-    async def on_client_closed(transport, client):
-        logger.info("Pipecat Client closed")
         await task.cancel()
 
     runner = PipelineRunner(handle_sigint=False)
