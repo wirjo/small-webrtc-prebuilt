@@ -18,7 +18,7 @@ createRoot(document.getElementById("root")!).render(
       <FullScreenContainer>
         <ConsoleTemplate
           connectParams={{
-            connectionUrl: "/api/offer",
+            connectionUrl: "http://52.23.198.122/api/offer",
           }}
           transportType="smallwebrtc"
         />
